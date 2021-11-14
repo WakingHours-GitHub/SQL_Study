@@ -1,4 +1,4 @@
-# 今日内容
+ # 今日内容
 	
 	1. DQL:查询语句
 		1. 排序查询
@@ -161,32 +161,33 @@
 		4. 创建完表后，添加主键
 			ALTER TABLE stu MODIFY id INT PRIMARY KEY;
 
-		5. 自动增长：
-			1.  概念：如果某一列是数值类型的，使用 auto_increment 关键字 -> 可以来完成值得自动增长
-			2.  一般来说auto_increment配合int类型的主键一起来使用。
-
+		5. 自动增长： -> 数值的自动增长
+			1. 概念：如果某一列是数值类型的，使用auto_increment 关键字 -> 可以来完成值得自动增长
+			2. 一般来说auto_increment配合int类型的主键一起来使用。
+			
 			3. 在创建表时，添加主键约束，并且完成主键自增长
 			create table stu(
-				id int primary key auto_increment,-- 给id添加主键约束
+				id int primary key auto_increment,-- 给id添加主键约束, 并且自动增长
 				name varchar(20)
-			);
-
+			); 
 			
 			4. 删除自动增长
 			ALTER TABLE stu MODIFY id INT;
+
 			5. 添加自动增长
 			ALTER TABLE stu MODIFY id INT AUTO_INCREMENT;
 			
-			一般来说自动增长都是配合主键来使用的，很少有情况不是配合主键使用，所以我们也就不在介绍了。
+			一般来说自动增长都是配合主键来使用的. 很少有情况不是配合主键使用，所以我们也就不在介绍了。
 
 
-	* 外键约束：foreign key,让表于表产生关系，从而保证数据的正确性。
+	* 外键约束：foreign key -> 让表于表产生关系，从而保证数据的正确性。
 		1. 在创建表时，可以添加外键
 			* 语法：
 				create table 表名(
-					....
+					.... -- 字段列表
 					外键列
 					constraint 外键名称 foreign key (外键列名称) references 主表名称(主表列名称)
+					-- 约束 外键名称 外键 外键列名称 关联 主表列名称
 				);
 
 		2. 删除外键
