@@ -42,6 +42,27 @@ ALTER TABLE employee DROP FOREIGN KEY emp_dept_fk
 # 添加外键
 ALTER TABLE employee ADD CONSTRAINT emp_dept_fk FOREIGN KEY (dep_id) REFERENCES department(id);
 
+# 级联操作 -> 所谓级联操作, 就是联动, 当更改关联外键时, 关联的外键值同样改变
+# 这里我们使用架构设计器来观察多表之间的关系
+# 我们先删除外键, 然后再添加外键并且设置级联更新
+ALTER TABLE employee DROP FOREIGN KEY emp_dept_fk; -- 删除外键
+# 然后添加外键并且设置级联更新
+ALTER TABLE employee ADD CONSTRAINT emp_dept_fk FOREIGN KEY
+(dep_id) REFERENCES department(id) ON UPDATE CASCADE;
+
+# 然后查询一下
+SELECT * FROM department;
+SELECT * FROM employee;
+# 当department的id改变时, 级联的(联动)employee的dep_id也会改变
+
+# 同时也有一个级联删除的操作
+# 同样, 我们也需要删除外键, 然后在设置级联更新的时候, 设置级联删除
+ALTER TABLE employee DROP FOREIGN KEY emp_dept_fk;
+
+# 添加外键约束, 同时设置级联更新和级联约束
+ALTER TABLE employee ADD CONSTRAINT emp_dept_fk FOREIGN KEY
+(dep_id) REFERENCES department(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
 
 
 
