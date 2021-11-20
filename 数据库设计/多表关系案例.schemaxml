@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8" collation="utf8_general_ci">mydb1</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="tab_category" view="colnames">
+<left>122</left>
+<top>231</top>
+<width>84</width>
+<height>112</height>
+<sql_create_table>CREATE TABLE `tab_category` (
+  `cid` int(11) NOT NULL AUTO_INCREMENT,
+  `cname` varchar(20) NOT NULL,
+  PRIMARY KEY (`cid`),
+  UNIQUE KEY `cname` (`cname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="tab_route" view="colnames">
+<left>355</left>
+<top>167</top>
+<width>83</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `tab_route` (
+  `rid` int(11) NOT NULL AUTO_INCREMENT,
+  `rname` varchar(100) NOT NULL,
+  `price` double DEFAULT NULL,
+  `rdate` date DEFAULT NULL,
+  `cid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`rid`),
+  UNIQUE KEY `rname` (`rname`),
+  KEY `cid` (`cid`),
+  CONSTRAINT `tab_route_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `tab_category` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="tab_user" view="colnames">
+<left>371</left>
+<top>407</top>
+<width>103</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `tab_user` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `sex` char(1) DEFAULT '男',
+  `telephone` varchar(11) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="tab_favorite" view="colnames">
+<left>587</left>
+<top>297</top>
+<width>71</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `tab_favorite` (
+  `rid` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`rid`,`uid`),
+  KEY `uid` (`uid`),
+  CONSTRAINT `tab_favorite_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `tab_route` (`rid`),
+  CONSTRAINT `tab_favorite_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `tab_user` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
