@@ -73,6 +73,13 @@ INSERT INTO emp (id, NAME, gender, salary, join_date, dept_id) VALUES(6, "白龙
 -- 查询所有员工信息，如果员工有部门，则查询部门名称，没有部门，则不显示部门名称
 SELECT 	t1.*,t2.`name` FROM emp t1 LEFT JOIN dept t2 ON t1.`dept_id` = t2.`id`;
 
+
+
+# 下面开始介绍子查询部分 -> 也称为嵌套查询
+
+
+
+
 # 子查询 -> 嵌套查询
 -- 查询工资最高的员工信息
 -- 1. 查询最高的工资是多少
@@ -84,27 +91,37 @@ SELECT * FROM emp WHERE emp.`salary` = 9000;
 -- 一条sql就完成: 子查询
 SELECT * FROM emp WHERE emp.`salary` = (SELECT MAX(emp.`salary`) FROM emp);
 
+# 同理查询工资最小的员工信息
+SELECT * FROM emp WHERE emp.`salary` = (SELECT MIN(emp.`salary`) FROM emp);
 
 
 
-# 子查询
+
+# 子查询不同情况 
 # 单行单列的情况 -> 可以用作where查询条件
 -- 查询员工工资小于平均工资的人
+SELECT AVG(emp.`salary`) FROM emp;
+SELECT * FROM emp WHERE	 emp.`salary` <= 5383.333;
+# 一条SQL查询 -> 子查询
+SELECT * FROM emp WHERE emp.`salary` < (SELECT AVG(emp.`salary`) FROM emp);
 
 
 # 多行单列的情况 -> 也可以用作where查询条件, 但是相当于一个集合, 所以我们运算符使用in
 -- 查询'财务部'和'市场部'所有的员工信息
 SELECT id FROM dept WHERE NAME = '财务部' OR '市场部';
 SELECT * FROM emp WHERE dept_id = 3 OR dept_id = 2;
-SELECT * FROM emp WHERE dept_id IN (2,3);
+SELECT * FROM emp WHERE dept_id IN (2,3); -- 或者用in
 
 -- 一条sql做到:
+-- 使用的运算符是in, 
 SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME = '财务部' OR NAME = '市场部');
 
 
-# 多行多列的情况 -> 作为虚拟表(或者认为是临时表), 可以查询
+
+# 多行多列的情况 -> 作为虚拟表(或者认为是临时表), 可以作为查询源
 DESC emp;
 -- 查询员工入职日期是2011-11-11日之后的员工信息和部门信息
+
 
 -- 子查询方式:
 # 先查询日期大于2011-11-11的员工信息;
@@ -112,6 +129,8 @@ SELECT * FROM emp WHERE emp.`join_date` > '2011-11-11'; # date(日期类型)可�
 # 然后将查询出来的表, 一起查询
 SELECT * FROM dept AS t1, (SELECT * FROM emp WHERE emp.`join_date` > '2011-11-11') t2
 WHERE t1.`id` = t2.dept_id;
+
+
 
 -- 也可以使用普通内连接进行查询
 SELECT * FROM emp, dept
