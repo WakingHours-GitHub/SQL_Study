@@ -1,6 +1,11 @@
 CREATE DATABASE IF NOT EXISTS mydb3;
 USE mydb3;
 
+DROP TABLE dept;
+DROP TABLE emp;
+DROP TABLE job;
+DROP TABLE salarygrade;
+
 -- 部门表
 CREATE TABLE dept (
   id INT PRIMARY KEY PRIMARY KEY, -- 部门id
@@ -117,25 +122,117 @@ WHERE
 	部门名称, 部门位置
 	2. 条件: 
 		emp.job_id = job.id and emp.dept_id = dept.id
-		
 */
 SELECT
 	t1.`id`,
 	t1.`ename`,
 	t1.`salary`,
 	t2.`jname`,
-	t2.`description`,
-	dept.`dname`,
-	dept.`loc`
-	
-FROM 
+	t2.`description`
+	t3.
+FROM
 	emp t1, job t2, dept t3
 WHERE
-	t1.`job_id` = t2.`id` AND t1.`dept_id` = t3.
+	t1.`job_id` = t2.`id` AND
+	t1.`dept_id` = t3.id;
+
+
+
 -- 3.查询员工姓名，工资，工资等级
+/*
+	分析：
+	1. 员工界面， 工资 emp, 工资等级 salarygrade
+	2. 条件条件:emp.salary >= salarygrade.losalary and emp.salary <= salarygrade.hissalary
+	简化形式: emp/salary bwetten...and...
+	
+*/
+SELECT
+	t1.`ename`,
+	t1.`salary`,
+	t2.`grade`
+
+FROM
+	emp t1, salarygrade t2
+WHERE	
+	t1.`salary` BETWEEN t2.`losalary` AND t2.`hisalary`;
 
 -- 4.查询员工姓名，工资，职务名称，职务描述，部门名称，部门位置，工资等级
+/*
+	分析:
+	1. 员工姓名, 工资-> emp
+		职务名称, 职务描述 -> job
+		部门名称, 部门位置 -> dept
+		工资等级 -> saolary
+	2. 条件: emp.job_id = job.id and
+		emp.dept_id = dept.id and
+		t1.salary BETWEEN t2.losalary AND t2.hisalary
+		
+*/
+SELECT
+	t1.`ename`,
+	t1.`salary`,
+	t2.`jname`,
+	t2.`description`,
+	t3.`dname`,
+	t3.`loc`,
+	t4.`grade`
+
+FROM
+	emp t1, job t2, dept t3, salarygrade t4
+WHERE
+	t1.`job_id` = t2.`id`
+	AND t1.`dept_id` = t3.`id`
+	AND t1.`salary` BETWEEN t4.`losalary` AND t4.`hisalary`;
+
 
 -- 5.查询出部门编号、部门名称、部门位置、部门人数
- 
+/*
+	分析:
+	1. 部门编号, 部门名称, 部门位置 dept表. 部门人数emp表
+	2. 使用分组查询.按照emp.dept_来分组, 查询count(id)
+	3. 使用子查询将第2步的查询结果和dept表进行关联分析.
+
+*/
+# 分组: 查询的是多行多列的数据 -> 作为表来使用
+SELECT emp.`dept_id`, COUNT(emp.`id`) total
+FROM emp
+GROUP BY emp.`dept_id`;
+
+SELECT
+	t1.`id`, t1.`dname`, t1.`loc`, total
+FROM
+	dept t1, 
+	(SELECT emp.`dept_id`, COUNT(emp.`id`) total
+	FROM emp
+	GROUP BY emp.`dept_id`) t2
+WHERE t1.`id` = t2.dept_id;
+
 -- 6.查询所有员工的姓名及其直接上级的姓名,没有领导的员工也需要查询
+/*
+	分析:
+	1. 姓名 -> emp
+		直接上级的姓名 -> emp表的id和mgr是自关联
+	2. 条件 emp.id = emp.mgr
+	3, 查询左表的所有数据和交集数据(因为没有领导的员工也需要查询)
+		使用左外连接
+		
+*/
+# 查询不为NULL的哪些数据 -> 13条数据
+SELECT
+	t1.`ename`,
+	t1.`mgr`,
+	t2.`id`,
+	t2.`ename`
+ 
+FROM emp t1, emp t2 -- 分为两个表进行查询
+WHERE t1.`mgr` = t2.`id`;
+# 使用左外连接进行所有数据的查询
+SELECT
+	t1.`ename`,
+	t1.`mgr`,
+	t2.`id`,
+	t2.`ename`
+
+FROM emp t1
+LEFT  JOIN emp t2
+ON t1.`mgr` = t2.`id`;
